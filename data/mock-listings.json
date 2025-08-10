@@ -1,0 +1,75 @@
+{
+  "active": [
+    {
+      "id": "A1001",
+      "title": "SoMa Modern Loft",
+      "price": 1499000,
+      "beds": 2,
+      "baths": 2,
+      "status": "Active",
+      "lat": 37.7786,
+      "lng": -122.4059,
+      "image": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1200&auto=format&fit=crop"
+    },
+    {
+      "id": "A1002",
+      "title": "Bernal Heights View Home",
+      "price": 1895000,
+      "beds": 3,
+      "baths": 2,
+      "status": "Active",
+      "lat": 37.7397,
+      "lng": -122.4136,
+      "image": "https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1200&auto=format&fit=crop"
+    },
+    {
+      "id": "A1003",
+      "title": "Sunnyvale Family House",
+      "price": 2149000,
+      "beds": 4,
+      "baths": 3,
+      "status": "Active",
+      "lat": 37.3688,
+      "lng": -122.0363,
+      "image": "https://images.unsplash.com/photo-1502005229762-cf1b2da7c52f?q=80&w=1200&auto=format&fit=crop"
+    }
+  ],
+  "sold": [
+    {
+      "id": "S2001",
+      "title": "Noe Valley Classic",
+      "price": 2050000,
+      "beds": 3,
+      "baths": 2,
+      "status": "Sold",
+      "lat": 37.7502,
+      "lng": -122.4337,
+      "image": "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1200&auto=format&fit=crop",
+      "soldAt": "2024-11-12"
+    },
+    {
+      "id": "S2002",
+      "title": "Palo Alto Ranch",
+      "price": 3280000,
+      "beds": 4,
+      "baths": 3,
+      "status": "Sold",
+      "lat": 37.4419,
+      "lng": -122.143,
+      "image": "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?q=80&w=1200&auto=format&fit=crop",
+      "soldAt": "2025-03-02"
+    },
+    {
+      "id": "S2003",
+      "title": "Oakland Craftsman",
+      "price": 1295000,
+      "beds": 3,
+      "baths": 2,
+      "status": "Sold",
+      "lat": 37.8044,
+      "lng": -122.2712,
+      "image": "https://images.unsplash.com/photo-1549187774-b4e9b0445b41?q=80&w=1200&auto=format&fit=crop",
+      "soldAt": "2024-09-18"
+    }
+  ]
+}

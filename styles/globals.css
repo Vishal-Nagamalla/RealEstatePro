@@ -1,0 +1,416 @@
+:root {
+  --brand-navy: #0A2540;
+  --brand-gold: #D4AF37;
+  --brand-white: #FFFFFF;
+  --text: #0e1726;
+  --muted: #6b7280;
+  --card-bg: #ffffff;
+  --card-border: #eef2f7;
+  --shadow-lg: 0 20px 40px rgba(10, 37, 64, 0.12);
+  --shadow-md: 0 10px 24px rgba(10, 37, 64, 0.10);
+  --radius-xl: 18px;
+}
+html, body { height: 100%; }
+body {
+  background: var(--brand-white);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  line-height: 1.5;
+}
+.bg-geo {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(1200px 400px at 100% -10%, rgba(212,175,55,0.06), transparent 60%),
+    radial-gradient(1000px 300px at -10% 110%, rgba(10,37,64,0.06), transparent 60%);
+}
+.bg-geo::before,
+.bg-geo::after {
+  content: "";
+  position: absolute; inset: 0; z-index: -1;
+}
+.bg-geo::before {
+  background:
+    linear-gradient(120deg, transparent 0 20%, rgba(10,37,64,0.035) 20% 21%, transparent 21% 40%, rgba(212,175,55,0.035) 40% 41%, transparent 41% 60%);
+  mask:
+    linear-gradient(#000, #000) top/100% 60% no-repeat,
+    linear-gradient(#000, #000) bottom/100% 40% no-repeat;
+}
+.bg-geo::after {
+  background: repeating-linear-gradient(135deg, rgba(10,37,64,0.04) 0 2px, transparent 2px 8px);
+  opacity: .4;
+}
+.navbar-brand strong { color: var(--brand-gold); letter-spacing: .3px; }
+
+.map-wrap { position: relative; width: min(1200px, 92vw); margin: 0 auto; }
+.map-container {
+  position: relative; width: 100%; height: min(80vh, 820px);
+  border: 2px solid var(--card-border); border-radius: var(--radius-xl);
+  overflow: hidden; box-shadow: var(--shadow-lg);
+}
+.map-overlay-cta {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(180deg, rgba(10,37,64,0.05), rgba(10,37,64,0.12));
+  backdrop-filter: blur(2px); cursor: pointer; color: white; text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  z-index: 4;
+}
+.map-overlay-cta .chip {
+  background: rgba(0,0,0,0.55); padding: 10px 14px; border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.25); font-weight: 600; letter-spacing: .2px;
+}
+.hero-overlay {
+  position: absolute; top: 1rem; left: 1rem; background: rgba(10,37,64,0.82);
+  color: white; padding: .9rem 1.1rem; border-radius: 12px; box-shadow: var(--shadow-md);
+}
+.floating-cta { position: absolute; right: 1rem; bottom: 1rem; z-index: 3; }
+.section { padding: 80px 0; }
+.card.h-100 { border: 1px solid var(--card-border); border-radius: var(--radius-xl); }
+.badge-gold { background: var(--brand-gold); color: #0A2540; }
+.badge-navy { background: var(--brand-navy); color: #fff; }
+
+/* Leaflet mood */
+.leaflet-mood .leaflet-container { filter: saturate(0.85) contrast(1.06); }
+
+
+/* --- Dark Site Theme & Geometry --- */
+body {
+  background: radial-gradient(1000px 600px at 120% -20%, #0d1a2c 0%, #0a1424 40%, #0a1220 60%) fixed;
+  color: #e8e9eb;
+}
+.site-geo {
+  position: relative;
+  isolation: isolate;
+}
+.site-geo::before,
+.site-geo::after {
+  content: "";
+  position: fixed;
+  inset: -20vh -10vw auto -10vw;
+  height: 65vh;
+  z-index: -2;
+  pointer-events: none;
+}
+.site-geo::before {
+  background:
+    linear-gradient(140deg, rgba(212,175,55,0.08), transparent 40%),
+    repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0 2px, transparent 2px 10px);
+  clip-path: polygon(0 0, 100% 0, 88% 35%, 15% 55%);
+  filter: blur(0.2px);
+}
+.site-geo::after {
+  background:
+    linear-gradient(20deg, rgba(22,46,85,0.55), transparent 55%),
+    repeating-linear-gradient(155deg, rgba(255,255,255,0.03) 0 3px, transparent 3px 12px);
+  clip-path: polygon(100% 0, 100% 60%, 60% 100%, 0 75%, 0 0);
+  opacity: .7;
+}
+
+/* --- Sleek Navbar (always visible, glass) --- */
+.navbar.navbar-dark {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(10,37,64,0.70) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.navbar.navbar-dark .nav-link, .navbar.navbar-dark .navbar-brand {
+  color: #e8e9eb !important;
+}
+.navbar.navbar-dark .nav-link:hover {
+  color: #D4AF37 !important;
+}
+.navbar .dropdown-menu {
+  background: rgba(13,26,44,0.92);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+  border-radius: 14px;
+  padding: 10px;
+  backdrop-filter: blur(8px);
+}
+.navbar .dropdown-item {
+  color: #e8e9eb;
+  border-radius: 10px;
+}
+.navbar .dropdown-item:hover {
+  background: rgba(212,175,55,0.18);
+  color: #fff;
+}
+
+/* --- Sections & Cards on dark --- */
+.section { padding: 80px 0; }
+.card.h-100 { background: #0e1b2f; border: 1px solid rgba(255,255,255,0.06); color: #dfe3ea; }
+.card .bg-white { background: transparent !important; }
+.badge-gold { background: #D4AF37; color: #0A2540; }
+.badge-navy { background: #102544; color: #fff; }
+
+/* --- Premium Map Frame --- */
+.map-wrap { width: min(1200px, 92vw); margin: 0 auto; }
+.map-frame {
+  padding: 2px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(212,175,55,0.75), rgba(255,255,255,0.08), rgba(16,37,68,0.9));
+  box-shadow: 0 30px 60px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(255,255,255,0.05);
+}
+.map-container {
+  height: min(78vh, 800px);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+}
+.map-overlay-cta .chip {
+  background: rgba(10,20,40,0.65);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* --- Remove extra global CTAs by default; we’ll keep the nav Contact --- */
+.floating-cta { display: none; }
+
+
+/* Dropdown underline animation */
+.navbar .nav-link, .navbar .dropdown-toggle {
+  position: relative;
+}
+.navbar .nav-link::after, .navbar .dropdown-toggle::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -6px;
+  width: 0; height: 2px;
+  background: linear-gradient(90deg, #D4AF37, rgba(212,175,55,0.2));
+  transition: width .25s ease;
+}
+.navbar .nav-link:hover::after, .navbar .dropdown-toggle:hover::after {
+  width: 100%;
+}
+
+/* Map frame sheen */
+.map-frame { position: relative; }
+.map-frame::after {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: 20px;
+  background: linear-gradient(120deg, rgba(255,255,255,0.06), transparent 30%, transparent 70%, rgba(212,175,55,0.08));
+  mask: linear-gradient(#000 0 0);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  animation: sheen 6s linear infinite;
+  opacity: .6;
+}
+@keyframes sheen {
+  0% { transform: translateX(-20%); }
+  50% { transform: translateX(10%); }
+  100% { transform: translateX(40%); }
+}
+
+/* On-map filter chips */
+.map-filters {
+  position: absolute; top: 16px; right: 16px; z-index: 5;
+  display: flex; gap: 8px;
+}
+.chip-pill {
+  background: rgba(14,27,47,0.85);
+  color: #e8e9eb;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: transform .15s ease, background .2s ease, border-color .2s ease;
+}
+.chip-pill.active {
+  background: rgba(212,175,55,0.25);
+  border-color: rgba(212,175,55,0.5);
+}
+.chip-pill:hover { transform: translateY(-1px); }
+
+/* Editorial testimonials */
+.testimonial-quote {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+}
+.testimonial-quote .name {
+  opacity: .9;
+  letter-spacing: .2px;
+}
+.testimonial-quote .stars { letter-spacing: 1px; }
+
+/* Split-view map panel */
+.split-wrap { display: grid; grid-template-columns: 1.2fr .8fr; gap: 24px; }
+@media (max-width: 992px) { .split-wrap { grid-template-columns: 1fr; } }
+.split-map {
+  height: 70vh; border-radius: 16px; overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+}
+
+
+/* Navbar spacing & premium dropdown */
+.navbar .navbar-nav { gap: 10px; }
+@media (min-width: 992px) { .navbar .navbar-nav { gap: 18px; } }
+.navbar .dropdown-toggle { padding-right: 20px; }
+.navbar .dropdown-menu {
+  min-width: 220px;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: radial-gradient(300px 200px at 10% 0%, rgba(255,255,255,0.06), transparent 60%), rgba(13,26,44,0.95);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+}
+.navbar .dropdown-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 10px;
+}
+.navbar .dropdown-item:hover { background: rgba(212,175,55,0.18); }
+.dropdown-caret {
+  position: absolute; top: -8px; right: 24px;
+  width: 14px; height: 14px; transform: rotate(45deg);
+  background: rgba(13,26,44,0.95);
+  border-left: 1px solid rgba(255,255,255,0.10);
+  border-top: 1px solid rgba(255,255,255,0.10);
+}
+
+
+/* --- Cinematic hero --- */
+.hero-cine {
+  position: relative;
+  min-height: 72vh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  background:
+    radial-gradient(1000px 600px at 80% -20%, rgba(212,175,55,0.10), transparent 60%),
+    radial-gradient(800px 500px at -10% 120%, rgba(16,37,68,0.45), transparent 60%),
+    url('https://images.unsplash.com/photo-1460317442991-0ec209397118?q=80&w=1920&auto=format&fit=crop') center/cover no-repeat;
+}
+.hero-blur {
+  position: absolute;
+  inset: 0;
+  backdrop-filter: saturate(1.1) contrast(1.02);
+}
+.hero-inner {
+  position: relative;
+  text-align: center;
+  padding: 0 1rem;
+}
+.hero-title {
+  font-size: clamp(28px, 5vw, 56px);
+  font-weight: 800;
+  letter-spacing: .2px;
+  color: #fff;
+  text-shadow: 0 10px 30px rgba(0,0,0,0.45);
+}
+.hero-sub {
+  color: #dfe6ef;
+  max-width: 800px;
+  margin: 12px auto 20px;
+}
+
+/* --- Glowing map frame pulse --- */
+.map-frame::before {
+  content: "";
+  position: absolute; inset: 0; border-radius: 22px;
+  box-shadow: 0 0 0 0 rgba(212,175,55,0.25);
+  animation: mapPulse 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes mapPulse {
+  0% { box-shadow: 0 0 0 0 rgba(212,175,55,0.18); }
+  70% { box-shadow: 0 0 0 10px rgba(212,175,55,0.02); }
+  100% { box-shadow: 0 0 0 0 rgba(212,175,55,0.0); }
+}
+
+/* --- Floating search bar (over map) --- */
+.float-search {
+  position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+  z-index: 6;
+  background: rgba(13,26,44,0.86);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px;
+  padding: 10px 14px;
+  display: flex; gap: 8px; align-items: center;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+}
+.float-search input, .float-search select {
+  background: transparent; color: #e8e9eb; border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 999px; padding: 8px 12px; outline: none;
+}
+.float-search .btn { border-radius: 999px; }
+
+/* --- Trust badges --- */
+.badges {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 18px;
+}
+.badge-tile {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px; padding: 18px; text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.28);
+}
+.badge-tile h3 { margin: 0; font-weight: 800; }
+.badge-tile p { margin: 0; color: #cbd5e1; }
+
+@media (max-width: 992px) {
+  .badges { grid-template-columns: 1fr; }
+}
+
+/* --- Floating schedule button --- */
+.float-schedule {
+  position: fixed; right: 16px; bottom: 16px; z-index: 10;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.35));
+}
+
+
+/* Map spacing and search reposition */
+.map-stack { margin-top: 32px; margin-bottom: 8px; }
+.float-search { top: auto; bottom: 18px; }
+
+/* Contact page readability */
+.contact-card {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #e8e9eb;
+  border-radius: 14px;
+}
+.contact-label { color: #cbd5e1; font-weight: 600; font-size: 0.9rem; }
+.form-control, .form-select {
+  background: rgba(255,255,255,0.92);
+  color: #0a1424;
+}
+textarea.form-control { min-height: 180px; }
+
+
+/* Magnetic hover for CTAs */
+.magnetic { position: relative; will-change: transform; transition: transform .15s ease; }
+.magnetic:hover { transform: translateY(-1px); }
+@media (hover: hover) {
+  .magnetic[data-magnet='true'] { transition: transform .08s ease; }
+}
+
+/* Neighborhood chip styles */
+.neighborhoods { display: flex; flex-wrap: wrap; gap: 10px; }
+.nb-chip {
+  background: rgba(13,26,44,0.85);
+  color: #e8e9eb;
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 10px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform .15s ease, background .2s ease;
+}
+.nb-chip:hover { background: rgba(212,175,55,0.22); transform: translateY(-1px); }
+
+/* Lead magnet strip */
+.lead-strip {
+  background: linear-gradient(90deg, rgba(212,175,55,0.12), rgba(13,26,44,0.9));
+  border-top: 1px solid rgba(255,255,255,0.12);
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  padding: 24px 0;
+}
+
+
+/* Allow map to receive scroll events even under the floating search (except when interacting with inputs) */
+.float-search { pointer-events: none; }
+.float-search input, .float-search select, .float-search .btn { pointer-events: auto; }
