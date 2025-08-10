@@ -1,6 +1,6 @@
 // next.config.js
 const isGithubPages = process.env.GITHUB_PAGES === 'true';
-const repoName = 'srikar-portfolio'; // <<< CHANGE to your repo name
+const repoName = 'RealtorPro';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -11,3 +11,11 @@ const nextConfig = {
   assetPrefix: isGithubPages ? `/${RelatorPro}/` : '',
 };
 module.exports = nextConfig;
+
+const isProd = process.env.NODE_ENV === 'production';
+
+module.exports = {
+  output: 'export',
+  basePath: isProd ? '/RealtorPro' : '',
+  images: { unoptimized: true }
+}
