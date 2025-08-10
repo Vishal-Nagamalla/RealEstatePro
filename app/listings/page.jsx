@@ -1,45 +1,45 @@
-'use client';
-import { Container, Row, Col, Form } from 'react-bootstrap';
-import { useMemo, useState } from 'react';
-import { getAllListings } from '@/lib/listings';
-import ListingCard from '@/components/ListingCard';
-import dynamic from 'next/dynamic';
+// app/listings/[id]/page.jsx
+import { Container, Row, Col, Badge } from 'react-bootstrap';
+import { getAllListings, getListingById } from '@/lib/listings';
 
-const MiniMap = dynamic(() => import('./splitMap'), { ssr: false });
-
-export default function ListingsPage() {
+// Tell Next to statically generate one page per ID (required for output: 'export')
+export function generateStaticParams() {
   const { active, sold } = getAllListings();
-  const [status, setStatus] = useState('active');
-  const items = useMemo(() => status==='sold'? sold : active, [status, active, sold]);
+  return [...active, ...sold].map((l) => ({ id: l.id }));
+}
 
+// Optional: ensure no unknown IDs at runtime (nice for GH Pages)
+export const dynamicParams = false;
+
+export default function ListingDetail({ params }) {
+  const listing = getListingById(params.id);
+  if (!listing) {
+    return (
+      <Container className="py-5">
+        <h2>Listing not found</h2>
+      </Container>
+    );
+  }
   return (
     <section className="section">
       <Container>
-        <Row className="mb-4 align-items-end">
-          <Col><h1>Browse Properties</h1></Col>
-          <Col md="auto">
-            <Form className="d-flex gap-2">
-              <Form.Select value={status} onChange={e=>setStatus(e.target.value)}>
-                <option value="active">Active</option>
-                <option value="sold">Sold</option>
-              </Form.Select>
-              <Form.Control type="text" placeholder="Search neighborhood…" />
-              <Form.Select><option>Min Price</option><option>$1,000,000</option><option>$1,500,000</option></Form.Select>
-              <Form.Select><option>Beds</option><option>2+</option><option>3+</option></Form.Select>
-            </Form>
+        <Row className="align-items-center">
+          <Col md={7}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={listing.image} alt={listing.title} className="img-fluid rounded shadow-sm" />
+          </Col>
+          <Col md={5}>
+            <h1>{listing.title}</h1>
+            <h3 className="mt-2">${listing.price.toLocaleString()}</h3>
+            <div className="mb-3">{listing.beds} bd • {listing.baths} ba</div>
+            <Badge bg={listing.status === 'Sold' ? 'dark' : 'warning'} text={listing.status === 'Sold' ? 'light' : 'dark'}>
+              {listing.status}
+            </Badge>
+            <p className="mt-4">
+              Beautifully presented home in a sought-after neighborhood. Close to transit, parks, and dining.
+            </p>
           </Col>
         </Row>
-
-        <div className="split-wrap">
-          <div>
-            <Row xs={1} md={2} className="g-4">
-              {items.map(item => (<Col key={item.id}><ListingCard item={item} /></Col>))}
-            </Row>
-          </div>
-          <div className="split-map">
-            <MiniMap items={items} />
-          </div>
-        </div>
       </Container>
     </section>
   );

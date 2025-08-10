@@ -6,7 +6,6 @@
     "dev": "next dev",
     "build": "next build",
     "export": "next export",
-    "start": "next start",
     "build:pages": "GITHUB_PAGES=true next build && next export"
   },
   "dependencies": {
