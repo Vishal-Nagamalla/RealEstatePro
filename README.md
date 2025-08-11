@@ -1,6 +1,6 @@
 # RealEstatePro – Srikar Palepu Real Estate Website
 
-## https://vishal-nagamalla.github.io/RealtorPro/
+## https://vishal-nagamalla.github.io/RealEstatePro/
 
 ## Overview
 RealEstatePro is a modern, responsive real estate website built to showcase properties, highlight client testimonials, and provide an easy way for potential clients to contact realtor Srikar Palepu. The website serves as an online portfolio and professional brand presence.
