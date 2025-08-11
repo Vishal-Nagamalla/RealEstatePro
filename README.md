@@ -1,4 +1,4 @@
-# RealtorEstatePro – Srikar Palepu Real Estate Website
+# RealEstatePro – Srikar Palepu Real Estate Website
 
 ## https://vishal-nagamalla.github.io/RealtorPro/
 
