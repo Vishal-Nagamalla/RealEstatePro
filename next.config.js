@@ -16,6 +16,8 @@ const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
   output: 'export',
-  basePath: isProd ? '/RealtorPro' : '',
-  images: { unoptimized: true }
-}
+  images: { unoptimized: true }, // required for GH Pages/static
+  basePath: process.env.GITHUB_PAGES === 'true' ? '/RealtorPro' : '',
+  assetPrefix: process.env.GITHUB_PAGES === 'true' ? '/RealtorPro/' : '',
+  trailingSlash: true,
+};

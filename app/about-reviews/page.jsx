@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { Container, Row, Col } from 'react-bootstrap';
+import headshot from '@/public/srikar-headshotbg.png';
 
 export const metadata = { title: 'About & Reviews | RealEstatePro | Srikar Palepu' };
 
@@ -12,13 +13,13 @@ export default function AboutReviewsPage() {
           <Col md={3}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <Image
-              src="/srikar-headshotbg.png"   // stays root-relative
+              src={headshot}
               alt="Srikar Palepu"
-              width={100}                    // pick the size you want rendered
-              height={100}
+              width={500}            // control the render size
+              height={500}
               className="rounded shadow-sm"
-              style={{ height: 'auto', width: '100%', maxWidth: '250px' }}
-            />         
+              style={{ width: '100%', maxWidth: '250px', height: 'auto' }}
+            />       
           </Col>
           <Col md={7}>
             <h1>Meet Srikar Palepu</h1>
