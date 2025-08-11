@@ -8,10 +8,14 @@ export default function AboutReviewsPage() {
       <Container>
         {/* About section */}
         <Row className="align-items-center g-4 mb-5">
-          <Col md={5}>
+          <Col md={3}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/srikar-headshot.png" alt="Srikar Palepu" className="img-fluid rounded shadow-sm" />
-          </Col>
+            <img 
+              src="/srikar-headshotbg.png" 
+              alt="Srikar Palepu" 
+              className="rounded shadow-sm" 
+              style={{ width: "100%", maxWidth: "250px", height: "auto" }} 
+            />          </Col>
           <Col md={7}>
             <h1>Meet Srikar Palepu</h1>
             <p>Are you selling, buying or renting a property? With my intimate knowledge of specific neighborhoods and keen insights of market conditions, I can help guide you through this complicated process with your best interests in mind. I’d be happy to provide assistance with determining current property value, crafting a competitive offer, writing and negotiating a contract, and much more. Contact me today.</p>
