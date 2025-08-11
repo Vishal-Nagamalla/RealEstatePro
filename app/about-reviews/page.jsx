@@ -1,8 +1,7 @@
+import Image from 'next/image';
 import { Container, Row, Col } from 'react-bootstrap';
 
 export const metadata = { title: 'About & Reviews | RealEstatePro | Srikar Palepu' };
-
-const prefix = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 export default function AboutReviewsPage() {
   return (
@@ -12,12 +11,15 @@ export default function AboutReviewsPage() {
         <Row className="align-items-center g-4 mb-5">
           <Col md={3}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img 
-              src={'${prefix}//srikar-headshotbg.png'}
-              alt="Srikar Palepu" 
-              className="rounded shadow-sm" 
-              style={{ width: "100%", maxWidth: "250px", height: "auto" }} 
-            />          </Col>
+            <Image
+              src="/srikar-headshotbg.png"   // stays root-relative
+              alt="Srikar Palepu"
+              width={100}                    // pick the size you want rendered
+              height={100}
+              className="rounded shadow-sm"
+              style={{ height: 'auto', width: '100%', maxWidth: '250px' }}
+            />         
+          </Col>
           <Col md={7}>
             <h1>Meet Srikar Palepu</h1>
             <p>Are you selling, buying or renting a property? With my intimate knowledge of specific neighborhoods and keen insights of market conditions, I can help guide you through this complicated process with your best interests in mind. I’d be happy to provide assistance with determining current property value, crafting a competitive offer, writing and negotiating a contract, and much more. Contact me today.</p>

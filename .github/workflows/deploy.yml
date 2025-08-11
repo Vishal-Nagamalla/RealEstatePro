@@ -18,7 +18,6 @@ jobs:
         with:
           node-version: 18
       - run: npm ci
-      - run: echo "NEXT_PUBLIC_BASE_PATH=/${{ github.event.repository.name }}" >> $GITHUB_ENV
       - run: echo "GITHUB_PAGES=true" >> $GITHUB_ENV
       - run: npm run build:pages
       - run: touch out/.nojekyll
