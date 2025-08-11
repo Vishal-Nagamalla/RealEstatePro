@@ -2,6 +2,8 @@ import { Container, Row, Col } from 'react-bootstrap';
 
 export const metadata = { title: 'About & Reviews | RealEstatePro | Srikar Palepu' };
 
+const prefix = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 export default function AboutReviewsPage() {
   return (
     <section className="section">
@@ -11,7 +13,7 @@ export default function AboutReviewsPage() {
           <Col md={3}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img 
-              src="/srikar-headshotbg.png" 
+              src={'${prefix}//srikar-headshotbg.png'}
               alt="Srikar Palepu" 
               className="rounded shadow-sm" 
               style={{ width: "100%", maxWidth: "250px", height: "auto" }} 
