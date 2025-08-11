@@ -7,8 +7,8 @@ const nextConfig = {
   output: 'export',               // next export -> ./out
   images: { unoptimized: true },  // allow <img> only (we're already using <img>)
   trailingSlash: true,            // GH Pages likes static trailing slashes
-  basePath: isGithubPages ? `/${RelatorPro}` : '',
-  assetPrefix: isGithubPages ? `/${RelatorPro}/` : '',
+  basePath: isGithubPages ? `/${repoName}` : '',
+  assetPrefix: isGithubPages ? `/${repoName}/` : '',
 };
 module.exports = nextConfig;
 
