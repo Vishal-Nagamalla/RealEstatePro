@@ -1,6 +1,6 @@
 // next.config.js
 const isGithubPages = process.env.GITHUB_PAGES === 'true';
-const repoName = 'RealtorPro';
+const repoName = 'RealEstatePro';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -17,7 +17,7 @@ const isProd = process.env.NODE_ENV === 'production';
 module.exports = {
   output: 'export',
   images: { unoptimized: true }, // required for GH Pages/static
-  basePath: process.env.GITHUB_PAGES === 'true' ? '/RealtorPro' : '',
-  assetPrefix: process.env.GITHUB_PAGES === 'true' ? '/RealtorPro/' : '',
+  basePath: process.env.GITHUB_PAGES === 'true' ? '/RealEstatePro' : '',
+  assetPrefix: process.env.GITHUB_PAGES === 'true' ? '/RealEstatePro/' : '',
   trailingSlash: true,
 };
