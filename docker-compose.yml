@@ -1,0 +1,18 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: realestatepro-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: srikar
+      POSTGRES_PASSWORD: devpassword
+      POSTGRES_DB: realestatepro
+    ports:
+      - "5555:5432"
+    volumes:
+      - realestatepro_db_data:/var/lib/postgresql/data
+      - ./data:/data
+
+volumes:
+  realestatepro_db_data:
+  

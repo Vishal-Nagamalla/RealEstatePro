@@ -1,19 +1,43 @@
+// components/ListingCard.jsx
 'use client';
-import { Card } from 'react-bootstrap';
-import { motion } from 'framer-motion';
+
 import Link from 'next/link';
+import { Badge } from 'react-bootstrap';
+
 export default function ListingCard({ item }) {
+  const imageUrl =
+    item?.photos?.[0] ??
+    item?.image ??
+    'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&auto=format&fit=crop';
+
   return (
-    <motion.div whileHover={{ y: -6 }}>
-      <Card className="h-100 shadow-sm">
-        <Card.Img variant="top" src={item.image} alt={item.title} />
-        <Card.Body>
-          <Card.Title>{item.title}</Card.Title>
-          <Card.Text><strong>${item.price.toLocaleString()}</strong> • {item.beds} bd • {item.baths} ba</Card.Text>
-          <div><span className={item.status === 'Sold' ? 'badge badge-navy' : 'badge badge-gold'}>{item.status}</span></div>
-        </Card.Body>
-        <Card.Footer className="bg-white"><Link href={`/listings/${item.id}`}>View details →</Link></Card.Footer>
-      </Card>
-    </motion.div>
+    <Link href={`/listings/${item.id}`} className="listing-card-link">
+      <article className="listing-card shadow-sm">
+        <div className="listing-card-image">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={imageUrl} alt={item.title} />
+
+          {item.status && (
+            <Badge
+              bg={item.status === 'Sold' ? 'dark' : 'warning'}
+              text={item.status === 'Sold' ? 'light' : 'dark'}
+              className="listing-card-status"
+            >
+              {item.status}
+            </Badge>
+          )}
+        </div>
+
+        <div className="listing-card-content">
+          <h3 className="listing-card-title">{item.title}</h3>
+          <p className="listing-card-price">
+            ${item.price.toLocaleString()}
+          </p>
+          <p className="listing-card-meta">
+            {item.beds} bd • {item.baths} ba
+          </p>
+        </div>
+      </article>
+    </Link>
   );
 }

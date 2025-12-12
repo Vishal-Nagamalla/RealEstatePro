@@ -1,23 +1,11 @@
-// next.config.js
-const isGithubPages = process.env.GITHUB_PAGES === 'true';
-const repoName = 'RealEstatePro';
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',               // next export -> ./out
-  images: { unoptimized: true },  // allow <img> only (we're already using <img>)
-  trailingSlash: true,            // GH Pages likes static trailing slashes
-  basePath: isGithubPages ? `/${repoName}` : '',
-  assetPrefix: isGithubPages ? `/${repoName}/` : '',
+  // Commented out for now so dynamic routes work with the Go API.
+  // output: 'export',
+
+  images: {
+    domains: ['images.unsplash.com'],
+  },
 };
+
 module.exports = nextConfig;
-
-const isProd = process.env.NODE_ENV === 'production';
-
-module.exports = {
-  output: 'export',
-  images: { unoptimized: true }, // required for GH Pages/static
-  basePath: process.env.GITHUB_PAGES === 'true' ? '/RealEstatePro' : '',
-  assetPrefix: process.env.GITHUB_PAGES === 'true' ? '/RealEstatePro/' : '',
-  trailingSlash: true,
-};

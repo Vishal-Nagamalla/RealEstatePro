@@ -1,15 +1,31 @@
 'use client';
+
+import { useEffect, useState } from 'react';
 import HeroCinematic from '@/components/HeroCinematic';
 import HeroMap from '@/components/HeroMap';
 import FloatingSearch from '@/components/FloatingSearch';
 import { Container, Row, Col } from 'react-bootstrap';
 import ListingCard from '@/components/ListingCard';
-import { getAllListings } from '@/lib/listings';
-import { useState } from 'react';
+import { fetchListings } from '@/lib/apiListings';
 
 export default function HomePage() {
-  const { active } = getAllListings();
   const [filters, setFilters] = useState(null);
+  const [featured, setFeatured] = useState([]);
+
+  // Load featured listings (from ACTIVE listings in Postgres)
+  useEffect(() => {
+    async function loadFeatured() {
+      try {
+        const active = await fetchListings('Active');
+        // Just grab first 3 as "Featured"
+        setFeatured(active.slice(0, 3));
+      } catch (err) {
+        console.error('Failed to load featured listings', err);
+      }
+    }
+
+    loadFeatured();
+  }, []);
 
   return (
     <>
@@ -22,19 +38,41 @@ export default function HomePage() {
 
       <section className="section">
         <Container>
-          <Row className="mb-4"><Col><h2>By the Numbers</h2></Col></Row>
+          <Row className="mb-4">
+            <Col>
+              <h2>By the Numbers</h2>
+            </Col>
+          </Row>
           <div className="badges">
-            <div className="badge-tile"><h3>500+</h3><p>Homes Sold</p></div>
-            <div className="badge-tile"><h3>$300M+</h3><p>Total Sales Volume</p></div>
-            <div className="badge-tile"><h3>Top 1%</h3><p>Bay Area Agents</p></div>
+            <div className="badge-tile">
+              <h3>500+</h3>
+              <p>Homes Sold</p>
+            </div>
+            <div className="badge-tile">
+              <h3>$300M+</h3>
+              <p>Total Sales Volume</p>
+            </div>
+            <div className="badge-tile">
+              <h3>Top 1%</h3>
+              <p>Bay Area Agents</p>
+            </div>
           </div>
         </Container>
       </section>
+
       <section className="section">
         <Container>
-          <Row className="mb-4"><Col><h2>Featured Listings</h2></Col></Row>
+          <Row className="mb-4">
+            <Col>
+              <h2>Featured Listings</h2>
+            </Col>
+          </Row>
           <Row xs={1} md={3} className="g-4">
-            {active.map(item => (<Col key={item.id}><ListingCard item={item} /></Col>))}
+            {featured.map((item) => (
+              <Col key={item.id}>
+                <ListingCard item={item} />
+              </Col>
+            ))}
           </Row>
         </Container>
       </section>

@@ -1,45 +1,70 @@
 'use client';
-import { Container, Row, Col, Form } from 'react-bootstrap';
-import { useMemo, useState } from 'react';
-import { getAllListings } from '@/lib/listings';
-import ListingCard from '@/components/ListingCard';
+
+import { useEffect, useState } from 'react';
+import { Container, Row, Col, Spinner } from 'react-bootstrap';
 import dynamic from 'next/dynamic';
+import { fetchListings } from '@/lib/apiListings';
+import ListingCard from '@/components/ListingCard';
 
 const MiniMap = dynamic(() => import('../listings/splitMap'), { ssr: false });
 
 export default function SoldPage() {
-  const { sold } = getAllListings();
-  const [minPrice, setMinPrice] = useState(0);
-  const items = useMemo(() => sold.filter(s => s.price >= minPrice), [sold, minPrice]);
+  const [listings, setListings] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        setLoading(true);
+        const data = await fetchListings('Sold');
+        setListings(Array.isArray(data) ? data : []);
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, []);
 
   return (
-    <section className="section">
-      <Container>
-        <Row className="mb-4 align-items-end">
-          <Col><h1>Sold Portfolio</h1></Col>
-          <Col md="auto">
-            <Form className="d-flex gap-2">
-              <Form.Select value={minPrice} onChange={(e)=>setMinPrice(Number(e.target.value))}>
-                <option value="0">Any Price</option>
-                <option value="1000000">$1,000,000+</option>
-                <option value="2000000">$2,000,000+</option>
-                <option value="3000000">$3,000,000+</option>
-              </Form.Select>
-            </Form>
-          </Col>
-        </Row>
+    <main className="inventory-shell inventory-shell--sold">
+      {/* MAP BAR */}
+      <section className="inventory-map-section">
+        <Container>
+          <div className="inventory-map-card">
+            <div className="inventory-map-main">
+              <MiniMap items={listings} />
+            </div>
+            <div className="inventory-map-overlay">
+              <div>
+                <h1 className="inventory-title">Sold Portfolio</h1>
+                <p className="inventory-subtitle">
+                  Recently closed transactions that highlight Srikar&apos;s track
+                  record in the Bay Area.
+                </p>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </section>
 
-        <div className="split-wrap">
-          <div>
-            <Row xs={1} md={2} className="g-4">
-              {items.map(item => (<Col key={item.id}><ListingCard item={item} /></Col>))}
+      {/* CARDS */}
+      <section className="section inventory-list-section">
+        <Container>
+          {loading ? (
+            <div className="py-5 text-center">
+              <Spinner animation="border" role="status" />
+            </div>
+          ) : (
+            <Row xs={1} md={2} lg={3} className="g-4">
+              {listings.map((item) => (
+                <Col key={item.id}>
+                  <ListingCard item={item} />
+                </Col>
+              ))}
             </Row>
-          </div>
-          <div className="split-map">
-            <MiniMap items={items} />
-          </div>
-        </div>
-      </Container>
-    </section>
+          )}
+        </Container>
+      </section>
+    </main>
   );
 }
