@@ -29,11 +29,17 @@ var db *pgxpool.Pool
 func main() {
 	ctx := context.Background()
 
+	// Prefer DATABASE_URL. If not set, use a safe local default.
 	dsn := os.Getenv("DATABASE_URL")
 	if dsn == "" {
-		dsn = "postgres://srikar:devpassword@localhost:5555/realestatepro?sslmode=disable"
+		// For local dev with docker-compose (5555 -> 5432)
+		user := getenvDefault("POSTGRES_USER", "srikar")
+		pass := getenvDefault("POSTGRES_PASSWORD", "postgres")
+		name := getenvDefault("POSTGRES_DB", "realestatepro")
+		host := getenvDefault("POSTGRES_HOST", "localhost")
+		port := getenvDefault("POSTGRES_PORT", "5555")
+		dsn = "postgres://" + user + ":" + pass + "@" + host + ":" + port + "/" + name + "?sslmode=disable"
 	}
-	log.Println("Using DSN:", dsn)
 
 	var err error
 	db, err = pgxpool.New(ctx, dsn)
@@ -87,7 +93,6 @@ FROM listings l
 		args = append(args, status)
 	}
 
-	// You can order however you like; this is just one example
 	query += ` ORDER BY l.status, l.id`
 
 	rows, err := db.Query(ctx, query, args...)
@@ -129,19 +134,18 @@ func handleListingByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var l Listing
-    row := db.QueryRow(ctx,
-        `SELECT id, title, price, beds, baths, status,
+	row := db.QueryRow(ctx,
+		`SELECT id, title, price, beds, baths, status,
                 latitude AS lat, longitude AS lng
          FROM listings WHERE id = $1`,
-        id,
-    )
+		id,
+	)
 	if err := row.Scan(&l.ID, &l.Title, &l.Price, &l.Beds, &l.Baths, &l.Status, &l.Lat, &l.Lng); err != nil {
 		log.Printf("handleListingByID: scan error for id %s: %v\n", id, err)
 		http.NotFound(w, r)
 		return
 	}
 
-	// Load photos for gallery
 	rows, err := db.Query(ctx,
 		`SELECT url FROM listing_photos WHERE listing_id = $1 ORDER BY sort_order`,
 		id,
@@ -156,9 +160,9 @@ func handleListingByID(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-    if len(l.Photos) > 0 && l.Image == "" {
-        l.Image = l.Photos[0]
-    }
+	if len(l.Photos) > 0 && l.Image == "" {
+		l.Image = l.Photos[0]
+	}
 
 	writeJSON(w, l)
 }
@@ -173,8 +177,10 @@ func writeJSON(w http.ResponseWriter, v any) {
 }
 
 func corsMiddleware(next http.Handler) http.Handler {
+	allowedOrigin := getenvDefault("CORS_ORIGIN", "http://localhost:3000")
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+		w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 
@@ -184,4 +190,12 @@ func corsMiddleware(next http.Handler) http.Handler {
 		}
 		next.ServeHTTP(w, r)
 	})
+}
+
+func getenvDefault(key, fallback string) string {
+	v := strings.TrimSpace(os.Getenv(key))
+	if v == "" {
+		return fallback
+	}
+	return v
 }

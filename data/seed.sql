@@ -1,4 +1,3 @@
--- Drop tables if they exist (for re-running seed easily)
 DROP TABLE IF EXISTS listing_photos;
 DROP TABLE IF EXISTS listings;
 
@@ -21,9 +20,16 @@ CREATE TABLE listing_photos (
   sort_order  INTEGER NOT NULL DEFAULT 0
 );
 
--- =========================================================
--- ===================== ACTIVE LISTINGS ===================
--- =========================================================
+CREATE TABLE IF NOT EXISTS favorites (
+  user_email TEXT NOT NULL,
+  listing_id TEXT NOT NULL REFERENCES listings(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  PRIMARY KEY (user_email, listing_id)
+);
+
+CREATE INDEX IF NOT EXISTS favorites_user_idx ON favorites(user_email);
+
+-- ACTIVE LISTINGS
 
 INSERT INTO listings (id, title, price, beds, baths, status, latitude, longitude, sold_at)
 VALUES
@@ -31,32 +37,24 @@ VALUES
   ('A1002', 'Sunnyvale Family House',       2149000, 4, 3, 'Active', 37.3688, -122.0363, NULL),
   ('A1003', 'SoMa Modern Loft',             1499000, 2, 2, 'Active', 37.7786, -122.4059, NULL),
   ('A1004', 'Palo Alto Modern Ranch',       3280000, 4, 3, 'Active', 37.4419, -122.1430, NULL),
-
-  -- new actives
   ('A1005', 'Redwood City Townhome',        1395000, 3, 2, 'Active', 37.4852, -122.2364, NULL),
   ('A1006', 'San Jose Tech Bungalow',       1180000, 3, 2, 'Active', 37.3382, -121.8863, NULL),
   ('A1007', 'Mill Valley Hillside Retreat', 2595000, 4, 3, 'Active', 37.9060, -122.5449, NULL),
   ('A1008', 'Fremont Cul-de-Sac Home',      1325000, 4, 2, 'Active', 37.5483, -121.9886, NULL);
 
--- =========================================================
--- ====================== SOLD LISTINGS ====================
--- =========================================================
+-- SOLD LISTINGS
 
 INSERT INTO listings (id, title, price, beds, baths, status, latitude, longitude, sold_at)
 VALUES
   ('S2001', 'Noe Valley Classic',           2050000, 3, 2, 'Sold', 37.7502, -122.4337, '2024-11-12T00:00:00Z'),
   ('S2002', 'Oakland Craftsman',           1295000, 3, 2, 'Sold', 37.8044, -122.2712, '2024-09-18T00:00:00Z'),
   ('S2003', 'Marina District Condo',        1750000, 2, 2, 'Sold', 37.8010, -122.4380, '2024-06-01T00:00:00Z'),
-
-  -- new solds
   ('S2004', 'Mission Dolores Flat',         1625000, 2, 2, 'Sold', 37.7599, -122.4269, '2024-03-15T00:00:00Z'),
   ('S2005', 'Berkeley Brownstone',          1890000, 3, 2, 'Sold', 37.8715, -122.2730, '2023-12-05T00:00:00Z'),
   ('S2006', 'Walnut Creek Family House',    1420000, 4, 3, 'Sold', 37.9101, -122.0652, '2023-08-20T00:00:00Z'),
   ('S2007', 'Los Gatos Estate',             3450000, 5, 4, 'Sold', 37.2358, -121.9624, '2023-05-10T00:00:00Z');
 
--- =========================================================
--- ==================== PHOTOS: ACTIVES ====================
--- =========================================================
+-- PHOTOS: ACTIVES
 
 INSERT INTO listing_photos (listing_id, url, sort_order) VALUES
   -- A1001 Bernal Heights View Home
@@ -95,9 +93,7 @@ INSERT INTO listing_photos (listing_id, url, sort_order) VALUES
   ('A1008', 'https://images.unsplash.com/photo-1600585154084-4e5fe7c5f1a6?w=1600&auto=format&fit=crop', 0),
   ('A1008', 'https://images.unsplash.com/photo-1600585154340-0ef3c08c0632?w=1600&auto=format&fit=crop', 1);
 
--- =========================================================
--- ===================== PHOTOS: SOLD ======================
--- =========================================================
+-- PHOTOS: SOLD
 
 INSERT INTO listing_photos (listing_id, url, sort_order) VALUES
   -- S2001 Noe Valley Classic

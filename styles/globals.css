@@ -10,7 +10,16 @@
   --shadow-md: 0 10px 24px rgba(10, 37, 64, 0.10);
   --radius-xl: 18px;
 }
-html, body { height: 100%; }
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow-x: clip;
+}
+
+/* Fallback for older browsers */
+@supports not (overflow: clip) {
+  html, body { overflow-x: hidden; }
+}
 body {
   background: var(--brand-white);
   color: var(--text);
@@ -42,7 +51,14 @@ body {
 }
 .navbar-brand strong { color: var(--brand-gold); letter-spacing: .3px; }
 
-.map-wrap { position: relative; width: min(1200px, 92vw); margin: 0 auto; }
+.map-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-inline: 16px;
+  box-sizing: border-box;
+}
 .map-container {
   position: relative; width: 100%; height: min(80vh, 820px);
   border: 2px solid var(--card-border); border-radius: var(--radius-xl);
@@ -104,6 +120,10 @@ body {
   clip-path: polygon(100% 0, 100% 60%, 60% 100%, 0 75%, 0 0);
   opacity: .7;
 }
+.site-geo { overflow-x: clip; }
+@supports not (overflow: clip) {
+  .site-geo { overflow-x: hidden; }
+}
 
 /* --- Sleek Navbar (always visible, glass) --- */
 .navbar.navbar-dark {
@@ -125,6 +145,7 @@ body {
   border-radius: 14px;
   padding: 10px;
   backdrop-filter: blur(8px);
+  margin-top: 10px !important;
 }
 .navbar .dropdown-item {
   color: #e8e9eb;
@@ -143,7 +164,14 @@ body {
 .badge-navy { background: #102544; color: #fff; }
 
 /* --- Premium Map Frame --- */
-.map-wrap { width: min(1200px, 92vw); margin: 0 auto; }
+.map-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-inline: 16px;
+  box-sizing: border-box;
+}
 .map-frame {
   padding: 2px;
   border-radius: 22px;
@@ -167,18 +195,40 @@ body {
 
 
 /* Dropdown underline animation */
-.navbar .nav-link, .navbar .dropdown-toggle {
+.navbar .nav-link,
+.navbar .dropdown-toggle {
   position: relative;
 }
-.navbar .nav-link::after, .navbar .dropdown-toggle::after {
+
+/* regular links use ::after */
+.navbar .nav-link::after {
   content: "";
   position: absolute;
-  left: 0; bottom: -6px;
-  width: 0; height: 2px;
-  background: linear-gradient(90deg, #D4AF37, rgba(212,175,55,0.2));
-  transition: width .25s ease;
+  left: 0;
+  bottom: -6px;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #D4AF37, rgba(212, 175, 55, 0.2));
+  transition: width 0.25s ease;
 }
-.navbar .nav-link:hover::after, .navbar .dropdown-toggle:hover::after {
+
+.navbar .nav-link:hover::after {
+  width: 100%;
+}
+
+/* dropdown toggles (e.g., Properties) use ::before so we can hide the caret via ::after */
+.navbar .dropdown-toggle::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #D4AF37, rgba(212, 175, 55, 0.2));
+  transition: width 0.25s ease;
+}
+
+.navbar .dropdown-toggle:hover::before {
   width: 100%;
 }
 
@@ -253,10 +303,16 @@ body {
 .navbar .dropdown-menu {
   min-width: 220px;
   padding: 12px;
+  margin-top: 10px !important; /* drop below the yellow underline */
   border-radius: 16px;
   border: 1px solid rgba(255,255,255,0.10);
   background: radial-gradient(300px 200px at 10% 0%, rgba(255,255,255,0.06), transparent 60%), rgba(13,26,44,0.95);
   box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+}
+
+/* Properties dropdown: subtle gold outline like the account dropdown */
+.navbar .dropdown-menu[aria-labelledby="nav-properties"] {
+  border-color: rgba(255, 193, 7, 0.28) !important;
 }
 .navbar .dropdown-item {
   display: flex; align-items: center; gap: 10px;
@@ -437,7 +493,7 @@ textarea.form-control { min-height: 180px; }
 .listing-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.85);
-  border-color: #facc15; /* gold */
+  border-color: #facc15; 
 }
 
 /* image */
@@ -702,7 +758,7 @@ textarea.form-control { min-height: 180px; }
 /* Active thumbnail gets a subtle gold outline */
 .listing-detail-section .gallery-thumb-btn--active {
   opacity: 1;
-  outline: 2px solid #ffcc33; /* your gold accent */
+  outline: 2px solid #ffcc33; 
   outline-offset: 2px;
 }
 
@@ -714,15 +770,11 @@ textarea.form-control { min-height: 180px; }
   }
 }
 
-/* === Active & Sold pages background === */
-
 .properties-page {
   position: relative;
   min-height: 100vh;
   padding: 3rem 0 4rem;
   overflow: hidden;
-
-  /* layered background: dark navy + soft blue/gold glows */
   background:
     radial-gradient(circle at 10% 0%, rgba(56, 189, 248, 0.20), transparent 55%),
     radial-gradient(circle at 90% 100%, rgba(234, 179, 8, 0.18), transparent 55%),
@@ -788,13 +840,10 @@ textarea.form-control { min-height: 180px; }
   z-index: 1;
 }
 
-/* ============ ACTIVE + SOLD LIST PAGES ============ */
-/* Applies to <main class="inventory-shell inventory-shell--active|--sold"> */
 
 .inventory-shell {
   position: relative;
   min-height: 100vh;
-  /* “Bay Area at night” style glows */
   background-color: #020617;
   background-image:
     radial-gradient(circle at 0% 0%, rgba(250, 204, 21, 0.18), transparent 55%),
@@ -812,7 +861,6 @@ textarea.form-control { min-height: 180px; }
 
 /* Slight accent differences between Active and Sold */
 .inventory-shell--active {
-  /* active gets a slightly cooler overall tone */
   background-image:
     radial-gradient(circle at 0% 0%, rgba(250, 204, 21, 0.16), transparent 55%),
     radial-gradient(circle at 100% 0%, rgba(59, 130, 246, 0.24), transparent 60%),
@@ -820,20 +868,16 @@ textarea.form-control { min-height: 180px; }
 }
 
 .inventory-shell--sold {
-  /* sold gets a warmer base */
   background-image:
     radial-gradient(circle at 0% 0%, rgba(250, 204, 21, 0.24), transparent 55%),
     radial-gradient(circle at 100% 0%, rgba(30, 64, 175, 0.20), transparent 60%),
     radial-gradient(circle at 50% 120%, rgba(67, 20, 7, 0.40), transparent 65%);
 }
 
-/* ============ MAP BAND ============ */
-
 .inventory-map-section {
   padding-block: 3rem 2rem;
 }
 
-/* Glassy map band sitting on top of the glows */
 .inventory-map-card {
   position: relative;
   border-radius: 24px;
@@ -908,8 +952,6 @@ textarea.form-control { min-height: 180px; }
   padding-block: 0.45rem;
 }
 
-/* ============ CARD GRID SECTION ============ */
-
 .inventory-list-section {
   padding-block: 1rem 4rem;
 }
@@ -921,21 +963,20 @@ textarea.form-control { min-height: 180px; }
     0 0 0 1px rgba(15, 23, 42, 0.8);
 }
 
-/* Make sure the map overlay row (title + price filter) sits above the map */
 .inventory-map-card {
-  position: relative;     /* already there, but safe to repeat */
+  position: relative;    
   z-index: 0;
 }
 
 .inventory-map-main {
   position: relative;
-  z-index: 1;             /* map layer */
+  z-index: 1;           
 }
 
 /* overlay row with dropdown in front of Leaflet tiles/controls */
 .inventory-map-overlay {
   position: relative;
-  z-index: 10;            /* higher than map */
+  z-index: 10;       
 }
 
 /* extra insurance: bring the select itself to the top */
@@ -944,7 +985,6 @@ textarea.form-control { min-height: 180px; }
   z-index: 20;
 }
 
-/* --- CLEAN MAP CARD LAYOUT (fixes the giant oval) --- */
 
 /* Overall card */
 .inventory-map-card {
@@ -967,7 +1007,7 @@ textarea.form-control { min-height: 180px; }
 
 /* Title + subtitle + filter sit in a simple row UNDER the map */
 .inventory-map-overlay {
-  position: static;              /* <-- undo absolute/overlay behavior */
+  position: static;             
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1128,4 +1168,438 @@ textarea.form-control { min-height: 180px; }
 /* Ensure the row doesn’t add extra gap at the bottom */
 .listing-detail-section .row {
   margin-bottom: 0;
+}
+
+/* Auth button styling */
+.auth-btn {
+  border-width: 1px;
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  background: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(8px);
+}
+
+.auth-btn:hover {
+  background: rgba(255, 193, 7, 0.12);
+}
+
+/* Make the account dropdown match theme */
+.auth-dropdown .dropdown-toggle {
+  border: 1px solid rgba(255, 193, 7, 0.55);
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(8px);
+}
+
+.auth-dropdown .dropdown-toggle:hover {
+  background: rgba(255, 193, 7, 0.12);
+}
+
+.auth-dropdown .dropdown-menu {
+  border-radius: 14px;
+  border: 1px solid rgba(255, 193, 7, 0.25);
+  background: rgba(10, 18, 35, 0.95);
+  backdrop-filter: blur(12px);
+  margin-top: 10px !important; /* align with nav dropdown offset */
+}
+
+/* Contact button match */
+.nav-contact {
+  border-radius: 999px;
+  font-weight: 700;
+  padding: 0.45rem 1rem;
+}
+
+
+/* Favorites page */
+.favorites-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(900px 500px at 12% 12%, rgba(255, 196, 0, 0.10), transparent 60%),
+    radial-gradient(900px 500px at 88% 22%, rgba(60, 140, 255, 0.12), transparent 62%),
+    linear-gradient(180deg, #071425 0%, #050b14 100%);
+}
+
+.favorites-hero {
+  padding: 34px 0 16px 0;
+}
+
+.favorites-hero-inner {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.favorites-title {
+  color: white;
+  font-size: 2.1rem;
+  margin: 0;
+  letter-spacing: 0.2px;
+}
+
+.favorites-subtitle {
+  color: rgba(255,255,255,0.75);
+  margin: 6px 0 0 0;
+}
+
+.favorites-body {
+  padding-bottom: 34px;
+}
+
+.favorites-empty {
+  margin: 24px auto 0 auto;
+  max-width: 560px;
+  padding: 28px;
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.30);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 18px 60px rgba(0,0,0,0.35);
+  text-align: center;
+}
+
+.favorites-empty-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto;
+  background: rgba(255, 196, 0, 0.14);
+  border: 1px solid rgba(255, 196, 0, 0.25);
+  color: #ffc400;
+}
+
+/* Favorite heart button overlay */
+.fav-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: white;
+  transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+  z-index: 5;
+}
+
+.fav-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(0, 0, 0, 0.62);
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.fav-btn--active {
+  background: rgba(255, 196, 0, 0.20);
+  border-color: rgba(255, 196, 0, 0.35);
+  color: #ffc400;
+}
+
+.listing-card-image {
+  position: relative;
+}
+
+.listing-fav-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(10, 14, 22, 0.55);
+  backdrop-filter: blur(10px);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+  z-index: 3;
+}
+
+.listing-fav-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 215, 0, 0.35);
+  background: rgba(10, 14, 22, 0.65);
+}
+
+.listing-fav-icon {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.listing-fav-icon.filled {
+  color: #f5c542; /* gold */
+}
+
+/* =========================
+   Admin (blue + gold)
+   ========================= */
+
+.admin-shell {
+  min-height: calc(100vh - 72px);
+  background:
+    radial-gradient(900px 600px at 20% 15%, rgba(226, 186, 82, 0.12), transparent 60%),
+    radial-gradient(900px 600px at 85% 20%, rgba(66, 117, 197, 0.16), transparent 60%),
+    linear-gradient(180deg, #071325 0%, #050a14 60%, #050810 100%);
+}
+
+.admin-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.admin-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.admin-subtitle {
+  margin: 6px 0 0;
+  color: rgba(255,255,255,0.72);
+  max-width: 760px;
+}
+
+.admin-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-card {
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(10, 16, 30, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow: 0 16px 60px rgba(0,0,0,0.45);
+}
+
+.admin-table {
+  color: rgba(255,255,255,0.92);
+}
+
+.admin-table thead th {
+  background: rgba(0,0,0,0.25);
+  border-bottom: 1px solid rgba(255,255,255,0.10);
+  color: rgba(255,255,255,0.80);
+  font-weight: 700;
+}
+
+.admin-table tbody td {
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.admin-modal {
+  background: rgba(8, 12, 24, 0.98);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+.admin-modal .form-control,
+.admin-modal .form-select {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: white;
+}
+
+.admin-modal .form-control::placeholder {
+  color: rgba(255,255,255,0.45);
+}
+
+/* Remove the little dropdown caret arrow */
+.brand-navbar .dropdown-toggle::after {
+  display: none !important;
+}
+
+/* Only add spacing between Contact and Account */
+.brand-navbar .account-slot {
+  margin-left: 12px; /* adjust to taste */
+}
+
+/* Make the account dropdown toggle look like an icon button */
+.brand-navbar .auth-dropdown > .dropdown-toggle {
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 193, 7, 0.55); /* warning-ish */
+  background: transparent;
+  line-height: 1;
+}
+
+/* If you have a magnetic hover animation class, keep it active on the account toggle */
+.brand-navbar .auth-dropdown > .dropdown-toggle:hover {
+  border-color: rgba(255, 193, 7, 0.9);
+}
+
+/* Avatar */
+.auth-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-avatar-img {
+  width: 35px;
+  height: 35px;
+  border-radius: 999px;
+  object-fit: cover;
+}
+
+/* Dropdown header (name/email) */
+.auth-menu-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.auth-menu-email {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  margin-top: 2px;
+}
+
+/* --- FORCE account/profile button to be a true circle --- */
+.auth-dropdown > .nav-link,
+.auth-dropdown > a,
+#nav-account {
+  padding: 0 !important;
+  border-radius: 9999px !important;
+}
+
+/* The clickable circle wrapper */
+.auth-dropdown .account-trigger {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9999px !important;   /* circle */
+  overflow: hidden;                   /* prevents oval bleed */
+  line-height: 1;
+}
+
+/* The actual image inside */
+.auth-dropdown .account-avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 9999px !important;   /* circle */
+  object-fit: cover;
+  display: block;
+}
+
+/* Admin table: make the Edit button readable (it was blending in) */
+.admin-shell .admin-card .btn-outline-light {
+  color: #0A2540 !important;
+  border-color: rgba(10, 37, 64, 0.35) !important;
+  background: rgba(10, 37, 64, 0.08) !important;
+}
+
+.admin-shell .admin-card .btn-outline-light:hover,
+.admin-shell .admin-card .btn-outline-light:focus {
+  color: #0A2540 !important;
+  border-color: rgba(10, 37, 64, 0.55) !important;
+  background: rgba(10, 37, 64, 0.14) !important;
+}
+
+.admin-shell .admin-card .btn-outline-light:disabled {
+  opacity: 0.35 !important;
+}
+
+/* ===== Admin modal accordion: force dark theme ===== */
+
+.admin-modal .modal-content {
+  background: #0b1220;              /* deep navy */
+  color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+.admin-modal .modal-header,
+.admin-modal .modal-footer {
+  border-color: rgba(255,255,255,0.10);
+}
+
+.admin-modal .modal-body {
+  background: transparent;
+}
+
+/* Accordion container */
+.admin-modal .accordion-item {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.admin-modal .accordion-button {
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.92);
+  border: none;
+  box-shadow: none;
+  padding: 14px 16px;
+}
+
+.admin-modal .accordion-button:not(.collapsed) {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.96);
+}
+
+.admin-modal .accordion-button:focus {
+  box-shadow: 0 0 0 2px rgba(212,175,55,0.25); /* your gold glow */
+}
+
+/* Accordion arrow icon */
+.admin-modal .accordion-button::after {
+  filter: invert(1);
+  opacity: 0.9;
+}
+
+/* Accordion body */
+.admin-modal .accordion-body {
+  background: rgba(0,0,0,0.18);
+  color: rgba(255,255,255,0.90);
+}
+
+/* Form controls inside modal */
+.admin-modal .form-label {
+  color: rgba(255,255,255,0.85);
+}
+
+.admin-modal .form-control,
+.admin-modal .form-select,
+.admin-modal textarea.form-control {
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.92);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.admin-modal .form-control::placeholder,
+.admin-modal textarea.form-control::placeholder {
+  color: rgba(255,255,255,0.45);
+}
+
+.admin-modal .form-control:focus,
+.admin-modal .form-select:focus,
+.admin-modal textarea.form-control:focus {
+  border-color: rgba(212,175,55,0.55);
+  box-shadow: 0 0 0 2px rgba(212,175,55,0.20);
+}
+
+.admin-modal .form-text {
+  color: rgba(255,255,255,0.55) !important;
+}
+
+/* Optional: make the default Accordion divider line subtle */
+.admin-modal .accordion-header {
+  border-bottom: 1px solid rgba(255,255,255,0.08);
 }

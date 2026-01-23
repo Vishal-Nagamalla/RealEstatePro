@@ -1,64 +1,165 @@
+// app/listings/splitMap.jsx
 'use client';
-import { MapContainer, TileLayer, CircleMarker, Tooltip, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
 
-export default function MiniMap({ items }) {
-  const center = [37.7749, -122.4194];
-  
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
+import { useEffect, useMemo, useState } from 'react';
+import { MapContainer, TileLayer, CircleMarker, Tooltip, useMap } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import { motion } from 'framer-motion';
+import { Card, Button } from 'react-bootstrap';
+import Link from 'next/link';
+import L from 'leaflet';
+
+const DEFAULT_CENTER = [37.7749, -122.4194];
+// Nice “see the whole Bay” fallback zoom if there are 0 pins
+const DEFAULT_ZOOM = 9;
+
+// Prevent “super zoom-in” when only 1 marker exists
+const SINGLE_PIN_ZOOM = 11;
+
+// Keeps the view comfortably showing Bay Area even if pins are tight
+const MAX_FIT_ZOOM = 12;
+
+function toCoords(item) {
+  const lat = item?.latitude;
+  const lng = item?.longitude;
+
+  const latNum = typeof lat === 'string' ? Number(lat) : lat;
+  const lngNum = typeof lng === 'string' ? Number(lng) : lng;
+
+  if (!Number.isFinite(latNum) || !Number.isFinite(lngNum)) return null;
+  return [latNum, lngNum];
+}
+
+// Fits map to markers whenever items change
+function FitBounds({ points }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!map) return;
+
+    if (!points || points.length === 0) {
+      map.setView(DEFAULT_CENTER, DEFAULT_ZOOM, { animate: false });
+      return;
+    }
+
+    if (points.length === 1) {
+      map.setView(points[0], SINGLE_PIN_ZOOM, { animate: false });
+      return;
+    }
+
+    const bounds = L.latLngBounds(points.map((p) => L.latLng(p[0], p[1])));
+    map.fitBounds(bounds, {
+      padding: [40, 40],
+      animate: false,
+      maxZoom: MAX_FIT_ZOOM,
+    });
+  }, [map, points]);
+
+  return null;
+}
+
+export default function MiniMap({ items = [] }) {
+  const [selected, setSelected] = useState(null);
+
+  const mappable = useMemo(() => {
+    return (Array.isArray(items) ? items : [])
+      .map((it) => {
+        const coords = toCoords(it);
+        return coords ? { ...it, _coords: coords } : null;
+      })
+      .filter(Boolean);
+  }, [items]);
+
+  const points = useMemo(() => mappable.map((x) => x._coords), [mappable]);
+
+  // Still used for initial render (FitBounds will correct immediately)
+  const center = useMemo(() => {
+    if (mappable.length === 0) return DEFAULT_CENTER;
+    const avgLat = mappable.reduce((sum, x) => sum + x._coords[0], 0) / mappable.length;
+    const avgLng = mappable.reduce((sum, x) => sum + x._coords[1], 0) / mappable.length;
+    return [avgLat, avgLng];
+  }, [mappable]);
 
   return (
-    <MapContainer center={center} zoom={11} style={{ width: '100%', height: '100%' }} attributionControl={false}>
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      {items.map(it => (
-        <CircleMarker key={it.id} center={[it.lat, it.lng]} radius={7}
-          pathOptions={{ color: '#8C6C1A', weight: 2, fillColor: it.status==='Sold' ? '#0A2540' : '#D4AF37', fillOpacity: 1 }}>
-          <Tooltip><div style={{fontSize:12}}><strong>{it.title}</strong></div></Tooltip>
-          <Popup>
-            <div style={{ minWidth: '200px', textAlign: 'center' }}>
-              <img 
-                src={it.image} 
-                alt={it.title}
-                style={{ 
-                  width: '100%', 
-                  height: '120px', 
-                  objectFit: 'cover', 
-                  borderRadius: '8px',
-                  marginBottom: '8px'
-                }} 
-              />
-              <h6 style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: '600' }}>
-                {it.title}
-              </h6>
-              <p style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '700', color: '#D4AF37' }}>
-                {formatPrice(it.price)}
-              </p>
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', fontSize: '12px', color: '#666' }}>
-                <span>{it.beds} bed{it.beds !== 1 ? 's' : ''}</span>
-                <span>{it.baths} bath{it.baths !== 1 ? 's' : ''}</span>
-              </div>
-              <div style={{ 
-                marginTop: '8px', 
-                padding: '4px 8px', 
-                borderRadius: '4px', 
-                fontSize: '11px', 
-                fontWeight: '500',
-                backgroundColor: it.status === 'Sold' ? '#0A2540' : '#D4AF37',
-                color: it.status === 'Sold' ? '#fff' : '#000'
-              }}>
-                {it.status}
-              </div>
-            </div>
-          </Popup>
-        </CircleMarker>
-      ))}
-    </MapContainer>
+    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+      <MapContainer
+        center={center}
+        zoom={DEFAULT_ZOOM}
+        style={{ width: '100%', height: '100%' }}
+        scrollWheelZoom={true}
+        attributionControl={false}
+      >
+        <FitBounds points={points} />
+
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+
+        {mappable.map((item) => {
+          const isSold = item.status === 'Sold';
+
+          const stroke = isSold ? '#D4AF37' : '#8C6C1A';
+          const fill = isSold ? '#0A2540' : '#D4AF37';
+          const radius = isSold ? 7 : 8;
+          const weight = isSold ? 1.5 : 2;
+          const fillOpacity = isSold ? 0.9 : 1;
+
+          return (
+            <CircleMarker
+              key={item.id}
+              center={item._coords}
+              radius={radius}
+              pathOptions={{ color: stroke, weight, fillColor: fill, fillOpacity }}
+              eventHandlers={{ click: () => setSelected(item) }}
+            >
+              <Tooltip direction="top" offset={[0, -6]} opacity={1}>
+                <div style={{ fontSize: 12 }}>
+                  <strong>{item.title}</strong>
+                  <br />
+                  ${Number(item.price || 0).toLocaleString()}
+                </div>
+              </Tooltip>
+            </CircleMarker>
+          );
+        })}
+      </MapContainer>
+
+      {selected && (
+        <motion.div
+          initial={{ x: 420, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: 420, opacity: 0 }}
+          transition={{ type: 'spring', stiffness: 120, damping: 16 }}
+          style={{ position: 'absolute', top: 16, right: 16, width: 360, zIndex: 5 }}
+        >
+          <Card className="shadow">
+            <Card.Img
+              src={
+                selected?.photos?.[0] ||
+                'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&auto=format&fit=crop'
+              }
+              alt={selected.title}
+            />
+            <Card.Body>
+              <Card.Title className="mb-1">{selected.title}</Card.Title>
+              <Card.Text className="mb-2">
+                <strong>${Number(selected.price || 0).toLocaleString()}</strong> • {selected.beds} bd •{' '}
+                {selected.baths} ba
+              </Card.Text>
+
+              <span className={selected.status === 'Sold' ? 'badge badge-navy me-2' : 'badge badge-gold me-2'}>
+                {selected.status}
+              </span>
+
+              <Button as={Link} href={`/listings/${selected.id}`} className="ms-2" variant="outline-dark">
+                View Listing
+              </Button>
+
+              <Button className="ms-2" variant="outline-secondary" onClick={() => setSelected(null)}>
+                Close
+              </Button>
+            </Card.Body>
+          </Card>
+        </motion.div>
+      )}
+    </div>
   );
 }

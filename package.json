@@ -8,15 +8,18 @@
     "build:pages": "GITHUB_PAGES=true next build"
   },
   "dependencies": {
-    "@react-google-maps/api": "^2.18.1",
+    "@aws-sdk/client-s3": "^3.971.0",
+    "@aws-sdk/s3-request-presigner": "^3.971.0",
     "bootstrap": "^5.3.3",
     "framer-motion": "^11.0.0",
+    "leaflet": "^1.9.4",
     "next": "14.2.4",
+    "next-auth": "^4.24.13",
+    "pg": "^8.16.3",
     "react": "18.2.0",
     "react-bootstrap": "^2.10.4",
+    "react-bootstrap-icons": "^1.11.3",
     "react-dom": "18.2.0",
-    "leaflet": "^1.9.4",
-    "react-leaflet": "^4.2.1",
-    "react-bootstrap-icons": "^1.11.3"
+    "react-leaflet": "^4.2.1"
   }
 }

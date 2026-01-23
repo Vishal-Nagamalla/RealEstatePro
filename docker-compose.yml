@@ -4,9 +4,9 @@ services:
     container_name: realestatepro-db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: srikar
-      POSTGRES_PASSWORD: devpassword
-      POSTGRES_DB: realestatepro
+      POSTGRES_USER: ${POSTGRES_USER:-srikar}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-realestatepro}
     ports:
       - "5555:5432"
     volumes:
@@ -15,4 +15,3 @@ services:
 
 volumes:
   realestatepro_db_data:
-  

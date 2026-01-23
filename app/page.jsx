@@ -12,12 +12,10 @@ export default function HomePage() {
   const [filters, setFilters] = useState(null);
   const [featured, setFeatured] = useState([]);
 
-  // Load featured listings (from ACTIVE listings in Postgres)
   useEffect(() => {
     async function loadFeatured() {
       try {
         const active = await fetchListings('Active');
-        // Just grab first 3 as "Featured"
         setFeatured(active.slice(0, 3));
       } catch (err) {
         console.error('Failed to load featured listings', err);
