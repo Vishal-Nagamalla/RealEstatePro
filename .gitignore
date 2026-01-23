@@ -70,3 +70,4 @@ go.work.sum
 
 # misc
 .vercel/
+.vercel

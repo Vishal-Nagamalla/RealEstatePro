@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { pool } from "@/lib/db";
 import { toDisplayPhotos } from "@/lib/s3photos";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export const runtime = "nodejs";
 
 export async function GET(req) {
