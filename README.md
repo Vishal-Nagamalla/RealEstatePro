@@ -23,4 +23,5 @@ RealEstatePro is a modern, responsive real estate website built to showcase prop
 - **/components** – Reusable UI components (e.g., navigation bar, footer, listing cards).
 - **/styles** – Global and modular CSS files.
 
+
 ---
