@@ -4,8 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "build:pages": "GITHUB_PAGES=true next build"
+    "build": "next build"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.971.0",
